@@ -63,7 +63,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               return null; // Use default value for other states and odd rows.
             }),
             cells: <DataCell>[
-              DataCell(Text('${stregths[index]}'))
+              DataCell(Text(stregths[index]))
             ], //${languages[index] //'Row $index'
             selected: selected[index],
             onSelectChanged: (bool? value) {
