@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/home_page.dart';
+import 'package:flutter_application_1/strength_page.dart';
 
 void main() => runApp(const MyApp());
 
@@ -27,84 +29,30 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  static const int numItems = 5;
-  List<bool> selected = List<bool>.generate(numItems, (int index) => false);
-  final List<String> stregths = [
-    "Creativity",
-    "Curiosity",
-    "Judgment",
-    "Love of Learning",
-    "Perspective"
-  ];
-  //new stuff
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-  ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  Widget _dataTableBody() {
-    return SizedBox(
-      width: double.infinity,
-      child: DataTable(
-        columns: const <DataColumn>[
-          DataColumn(
-            label: Text('Number'),
-          ),
-        ],
-        rows: List<DataRow>.generate(
-          numItems,
-          (int index) => DataRow(
-            color: MaterialStateProperty.resolveWith<Color?>(
-                (Set<MaterialState> states) {
-              // All rows will have the same selected color.
-              if (states.contains(MaterialState.selected)) {
-                return Theme.of(context).colorScheme.primary.withOpacity(0.08);
-              }
-              // Even rows will have a grey color.
-              if (index.isEven) {
-                return Colors.grey.withOpacity(0.3);
-              }
-              return null; // Use default value for other states and odd rows.
-            }),
-            cells: <DataCell>[
-              DataCell(Text(stregths[index]))
-            ], //${languages[index] //'Row $index'
-            selected: selected[index],
-            onSelectChanged: (bool? value) {
-              setState(() {
-                selected[index] = value!;
-              });
-            },
-          ),
-        ),
-      ),
-    );
-  }
+  PageController pageController = PageController(initialPage: 0);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _dataTableBody(),
+      body: PageView(
+        controller: pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        children: [
+          StrengthWidget(),
+          OtherWidget(),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: Icon(Icons.fitness_center),
+            label: 'Character Strength',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.business),
@@ -113,48 +61,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
+        onTap: (index) {
+          pageController.animateToPage(index,
+              duration: Duration(milliseconds: 500), curve: Curves.ease);
+        },
       ),
     );
   }
-
-  /*@override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: DataTable(
-        columns: const <DataColumn>[
-          DataColumn(
-            label: Text('Number'),
-          ),
-        ],
-        rows: List<DataRow>.generate(
-          numItems,
-          (int index) => DataRow(
-            color: MaterialStateProperty.resolveWith<Color?>(
-                (Set<MaterialState> states) {
-              // All rows will have the same selected color.
-              if (states.contains(MaterialState.selected)) {
-                return Theme.of(context).colorScheme.primary.withOpacity(0.08);
-              }
-              // Even rows will have a grey color.
-              if (index.isEven) {
-                return Colors.grey.withOpacity(0.3);
-              }
-              return null; // Use default value for other states and odd rows.
-            }),
-            cells: <DataCell>[
-              DataCell(Text(stregths[index]))
-            ], //${languages[index] //'Row $index'
-            selected: selected[index],
-            onSelectChanged: (bool? value) {
-              setState(() {
-                selected[index] = value!;
-              });
-            },
-          ),
-        ),
-      ),
-    );
-  }*/
 }
